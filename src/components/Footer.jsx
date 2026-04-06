@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Custom SVG components to replace the removed Lucide brand icons
 const InstaIcon = ({ size, color }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
@@ -24,21 +23,21 @@ const FacebookIcon = ({ size, color }) => (
 const Footer = () => {
     return (
         <footer className="glass" style={{ margin: '20px 5%', padding: '40px', textAlign: 'center', borderRadius: '30px 30px 0 0', borderBottom: 'none' }}>
-            <h2 style={{ color: '#fb6f92', marginBottom: '10px' }}>CrochetByBani</h2>
+            <h2 style={{ color: '#d81b60', marginBottom: '10px' }}>CrochetWithBani</h2>
             <p style={{ fontStyle: 'italic', marginBottom: '20px' }}>"Turning simple yarn into magical moments." ✨</p>
 
             <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
-                <a href="#" style={{ color: '#fb6f92', transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <InstaIcon size={28} color="#fb6f92" />
+                <a href="https://instagram.com/crochetwithbani" target="_blank" rel="noopener noreferrer" style={{ transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                    <InstaIcon size={28} color="#d81b60" />
                 </a>
-                <a href="#" style={{ color: '#fb6f92', transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <TwitterIcon size={28} color="#fb6f92" />
+                <a href="https://twitter.com/crochetwithbani" target="_blank" rel="noopener noreferrer" style={{ transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                    <TwitterIcon size={28} color="#d81b60" />
                 </a>
-                <a href="#" style={{ color: '#fb6f92', transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <FacebookIcon size={28} color="#fb6f92" />
+                <a href="https://facebook.com/crochetwithbani" target="_blank" rel="noopener noreferrer" style={{ transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                    <FacebookIcon size={28} color="#d81b60" />
                 </a>
             </div>
-            <p style={{ marginTop: '30px', fontSize: '0.9rem', opacity: 0.7 }}>© 2026 CrochetByBani. All rights reserved.</p>
+            <p style={{ marginTop: '30px', fontSize: '0.9rem', opacity: 0.7 }}>© 2026 CrochetWithBani. All rights reserved.</p>
         </footer>
     );
 };
