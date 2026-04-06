@@ -2,10 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 
-// Using the /embed endpoint for Instagram links
 const products = [
-    { id: 1, name: "Mikasa Muffler", price: 450, instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed" },
-    { id: 2, name: "Faceswap Octo", price: 375, instaLink: "https://www.instagram.com/p/DWraCbPCent/embed" },
+    { id: 1, name: "Mikasa Scarf", price: 799, instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed" },
+    { id: 2, name: "Reversible Octo", price: 375, instaLink: "https://www.instagram.com/p/DWraCbPCent/embed" },
 ];
 
 const Home = () => {
