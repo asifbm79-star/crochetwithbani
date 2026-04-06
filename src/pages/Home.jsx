@@ -4,8 +4,8 @@ import { useCart } from '../context/CartContext';
 
 // Using the /embed endpoint for Instagram links
 const products = [
-    { id: 1, name: "Pink Bucket Hat", price: 45, instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed" },
-    { id: 2, name: "Granny Square Bag", price: 55, instaLink: "https://www.instagram.com/p/DWraCbPCent/embed" },
+    { id: 1, name: "Mikasa Muffler", price: 450, instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed" },
+    { id: 2, name: "Faceswap Octo", price: 375, instaLink: "https://www.instagram.com/p/DWraCbPCent/embed" },
 ];
 
 const Home = () => {
@@ -63,7 +63,7 @@ const Home = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '0 10px' }}>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>{item.name}</h3>
-                            <p style={{ fontWeight: 'bold', color: '#d81b60', fontSize: '1.2rem' }}>${item.price}</p>
+                            <p style={{ fontWeight: 'bold', color: '#d81b60', fontSize: '1.2rem' }}>₹{item.price}</p>
                         </div>
 
                         <button className="btn-cute" style={{ width: '100%' }} onClick={() => addToCart(item)}>
