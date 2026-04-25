@@ -1,11 +1,12 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom'; // Added useNavigate here
 
 const Cart = () => {
-    const { cart, removeFromCart } = useCart();
+    const { cart, removeFromCart, addToCart, decreaseQuantity } = useCart();
+    const navigate = useNavigate(); // Initialize the navigation hook
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
@@ -38,17 +39,25 @@ const Cart = () => {
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px dashed rgba(216, 27, 96, 0.2)' }}
                                 >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        {/* Removed Thumbnail, displaying just the text */}
-                                        <div>
-                                            <h4 style={{ fontSize: '1.3rem', color: '#333', marginBottom: '5px' }}>{item.name}</h4>
-                                            <p style={{ fontSize: '1.1rem', color: '#888' }}>
-                                                <span style={{ color: '#d81b60', fontWeight: 'bold' }}>₹{item.price}</span> <span style={{ fontSize: '0.9rem' }}>x {item.quantity}</span>
-                                            </p>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        <h4 style={{ fontSize: '1.3rem', color: '#333', margin: 0 }}>{item.name}</h4>
+                                        <p style={{ fontSize: '1.2rem', color: '#d81b60', fontWeight: 'bold', margin: 0 }}>
+                                            ₹{item.price}
+                                        </p>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', background: 'white', padding: '6px 12px', borderRadius: '50px', border: '1px solid #ddd', width: 'fit-content', marginTop: '5px' }}>
+                                            <button onClick={() => decreaseQuantity(item.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#888', display: 'flex', alignItems: 'center' }}>
+                                                <Minus size={18} />
+                                            </button>
+                                            <span style={{ fontWeight: '800', color: '#333', fontSize: '1.1rem', width: '20px', textAlign: 'center' }}>
+                                                {item.quantity}
+                                            </span>
+                                            <button onClick={() => addToCart(item)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#d81b60', display: 'flex', alignItems: 'center' }}>
+                                                <Plus size={18} />
+                                            </button>
                                         </div>
                                     </div>
 
-                                    {/* Redesigned Trash Button */}
                                     <button
                                         onClick={() => removeFromCart(item.id)}
                                         style={{
@@ -69,7 +78,12 @@ const Cart = () => {
                             <h3 style={{ fontSize: '2.5rem', color: '#d81b60', fontWeight: '900' }}>₹{total}</h3>
                         </div>
 
-                        <button className="btn-cute" style={{ width: '100%', padding: '18px', fontSize: '1.2rem', marginTop: '30px', borderRadius: '15px', letterSpacing: '1px' }}>
+                        {/* Bulletproof Navigation Button */}
+                        <button
+                            onClick={() => navigate('/checkout')}
+                            className="btn-cute"
+                            style={{ width: '100%', padding: '18px', fontSize: '1.2rem', marginTop: '30px', borderRadius: '15px', letterSpacing: '1px' }}
+                        >
                             Proceed to Checkout
                         </button>
                     </div>
