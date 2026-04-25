@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { auth } from '../services/firebase'; // Added to allow user reloading
+import { auth } from '../services/firebase';
+import { sendEmailVerification } from 'firebase/auth'; // Imported for the Resend button
 import { useNavigate } from 'react-router-dom';
 import { Settings, Lock, Package, LifeBuoy, Mail } from 'lucide-react';
 
@@ -56,15 +57,26 @@ const Login = () => {
         }
     };
 
-    // Smart Verification Check
     const checkVerificationStatus = async () => {
         if (auth.currentUser) {
-            await auth.currentUser.reload(); // Ask Firebase for the latest user info
+            await auth.currentUser.reload();
             if (auth.currentUser.emailVerified) {
-                window.location.href = "/"; // Hard redirect to homepage to fully clear state
+                window.location.href = "/";
             } else {
                 alert("We haven't detected verification yet. Make sure you clicked the link in your email!");
             }
+        }
+    };
+
+    // New Resend Verification Email Function
+    const handleResendVerification = async () => {
+        try {
+            if (auth.currentUser) {
+                await sendEmailVerification(auth.currentUser);
+                alert("✨ A new verification email has been sent! Don't forget to check your spam folder.");
+            }
+        } catch {
+            alert("Please wait a moment before requesting another email.");
         }
     };
 
@@ -85,13 +97,23 @@ const Login = () => {
                                 We've sent a magic link to <br/><strong>{currentUser.email}</strong>
                             </p>
 
-                            {/* The Spam Warning Box */}
+                            {/* Updated Spam Warning Box */}
                             <div style={{ background: 'rgba(255, 77, 77, 0.1)', border: '1px solid #ff4d4d', color: '#d81b60', padding: '15px', borderRadius: '15px', margin: '20px 0', fontWeight: 'bold' }}>
-                                🚨 Don't forget to check your spam list too hehe 🕵️‍♀️
+                                🚨 Don't forget to check your spam list too 🕵️‍♀️
                             </div>
 
                             <button className="btn-cute" onClick={checkVerificationStatus} style={{ width: '100%', padding: '15px', fontSize: '1.1rem', marginBottom: '15px' }}>
                                 I've Verified It!
+                            </button>
+
+                            {/* New Resend Email Button */}
+                            <button
+                                onClick={handleResendVerification}
+                                style={{ width: '100%', padding: '15px', fontSize: '1rem', marginBottom: '20px', background: 'transparent', color: '#d81b60', border: '2px solid rgba(216, 27, 96, 0.3)', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s' }}
+                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(216, 27, 96, 0.05)'}
+                                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                Resend Email
                             </button>
 
                             <button onClick={() => logout()} style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer', fontWeight: 'bold', textDecoration: 'underline' }}>

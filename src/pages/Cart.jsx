@@ -1,19 +1,25 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext'; // Import Auth Context!
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Cart = () => {
     const { cart, removeFromCart, addToCart, decreaseQuantity } = useCart();
-    const { currentUser } = useAuth(); // Get the logged-in status
+    const { currentUser } = useAuth();
     const navigate = useNavigate();
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const handleCheckoutClick = () => {
         if (currentUser) {
-            navigate('/checkout');
+            // Smart Check: Are they actually verified?
+            if (currentUser.emailVerified) {
+                navigate('/checkout');
+            } else {
+                alert("Please verify your email before checking out! 💌");
+                navigate('/login'); // Send them to the verification screen
+            }
         } else {
             alert("Please log in or sign up to place your order! 🧶");
             navigate('/login');
@@ -89,7 +95,6 @@ const Cart = () => {
                             <h3 style={{ fontSize: '2.5rem', color: '#d81b60', fontWeight: '900' }}>₹{total}</h3>
                         </div>
 
-                        {/* Updated button to check login status */}
                         <button
                             onClick={handleCheckoutClick}
                             className="btn-cute"
