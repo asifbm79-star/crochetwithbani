@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { auth } from '../services/firebase'; // Added to allow user reloading
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Settings, Lock, Package, LifeBuoy } from 'lucide-react'; // Added new icons
+import { Settings, Lock, Package, LifeBuoy, Mail } from 'lucide-react';
 
 // Cute Google SVG Icon
 const GoogleIcon = () => (
@@ -20,8 +20,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    // Bring in the new loginWithGoogle function
-    const { login, signup, currentUser, logout, loginWithGoogle } = useAuth();
+    const { login, signup, currentUser, logout, loginWithGoogle, resetPassword } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -34,7 +33,7 @@ const Login = () => {
                 await signup(email, password);
             }
             navigate('/');
-        } catch (err) {
+        } catch {
             setError("Failed to authenticate. Check your details.");
         }
     };
@@ -43,76 +42,101 @@ const Login = () => {
         try {
             await loginWithGoogle();
             navigate('/');
-        } catch (err) {
+        } catch {
             setError("Failed to log in with Google.");
         }
     };
 
-    // --- LOGGED IN USER DASHBOARD VIEW ---
+    const handlePasswordReset = async () => {
+        try {
+            await resetPassword(currentUser.email);
+            alert("✨ A password reset link has been sent to your email!");
+        } catch {
+            alert("Oops! Couldn't send the reset email. Please try again later.");
+        }
+    };
+
+    // Smart Verification Check
+    const checkVerificationStatus = async () => {
+        if (auth.currentUser) {
+            await auth.currentUser.reload(); // Ask Firebase for the latest user info
+            if (auth.currentUser.emailVerified) {
+                window.location.href = "/"; // Hard redirect to homepage to fully clear state
+            } else {
+                alert("We haven't detected verification yet. Make sure you clicked the link in your email!");
+            }
+        }
+    };
+
+    // --- LOGGED IN USER LOGIC ---
     if (currentUser) {
+
+        // 1. UNVERIFIED EMAIL VIEW
+        if (!currentUser.emailVerified) {
+            return (
+                <div style={{ paddingTop: '150px', paddingBottom: '80px', display: 'flex', justifyContent: 'center', minHeight: '80vh', backgroundColor: '#f5f5f5' }}>
+                    <div style={{ width: '90%', maxWidth: '500px' }}>
+                        <div className="glass" style={{ padding: '40px 30px', textAlign: 'center', background: '#ebebeb', borderRadius: '30px', border: '1px solid #e0e0e0', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                            <div style={{ background: '#ffe5ec', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px', color: '#d81b60' }}>
+                                <Mail size={40} />
+                            </div>
+                            <h2 style={{ color: '#d81b60', fontSize: '2rem', marginBottom: '15px' }}>Verify Your Email 💌</h2>
+                            <p style={{ color: '#555', fontSize: '1.1rem', marginBottom: '10px' }}>
+                                We've sent a magic link to <br/><strong>{currentUser.email}</strong>
+                            </p>
+
+                            {/* The Spam Warning Box */}
+                            <div style={{ background: 'rgba(255, 77, 77, 0.1)', border: '1px solid #ff4d4d', color: '#d81b60', padding: '15px', borderRadius: '15px', margin: '20px 0', fontWeight: 'bold' }}>
+                                🚨 Don't forget to check your spam list too hehe 🕵️‍♀️
+                            </div>
+
+                            <button className="btn-cute" onClick={checkVerificationStatus} style={{ width: '100%', padding: '15px', fontSize: '1.1rem', marginBottom: '15px' }}>
+                                I've Verified It!
+                            </button>
+
+                            <button onClick={() => logout()} style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer', fontWeight: 'bold', textDecoration: 'underline' }}>
+                                Sign out & try another account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 2. VERIFIED USER DASHBOARD VIEW
         return (
             <div style={{ paddingTop: '120px', paddingBottom: '80px', display: 'flex', justifyContent: 'center', minHeight: '80vh', backgroundColor: '#f5f5f5' }}>
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    style={{ width: '90%', maxWidth: '600px' }}
-                >
-                    {/* Header Card */}
+                <div style={{ width: '90%', maxWidth: '600px' }}>
                     <div className="glass" style={{ padding: '40px', textAlign: 'center', background: '#ebebeb', borderRadius: '30px', marginBottom: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                         <h2 style={{ color: '#d81b60', fontSize: '2rem', marginBottom: '10px' }}>Welcome back! 🌸</h2>
                         <p style={{ color: '#555', marginBottom: '25px', fontSize: '1.1rem' }}>Logged in as: <strong>{currentUser.email}</strong></p>
                         <button className="btn-cute" onClick={() => logout()} style={{ padding: '10px 30px' }}>Log Out</button>
                     </div>
 
-                    {/* Account Options Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
 
-                        {/* Option 1: Account Settings */}
-                        <div
-                            className="glass"
-                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
-                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                        >
+                        <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Settings size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Account Settings</h3>
                         </div>
 
-                        {/* Option 2: Change Password */}
-                        <div
-                            className="glass"
-                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
-                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                        >
+                        <div onClick={handlePasswordReset} className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Lock size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Change Password</h3>
                         </div>
 
-                        {/* Option 3: Order History */}
-                        <div
-                            className="glass"
-                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
-                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                        >
+                        <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Package size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Order History</h3>
                         </div>
 
-                        {/* Option 4: Support */}
-                        <div
-                            className="glass"
-                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
-                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                        >
+                        <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><LifeBuoy size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Support</h3>
                         </div>
 
                     </div>
-                </motion.div>
+                </div>
             </div>
         );
     }
@@ -120,7 +144,7 @@ const Login = () => {
     // --- LOGGED OUT / LOGIN FORM VIEW ---
     return (
         <div style={{ paddingTop: '120px', paddingBottom: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', backgroundColor: '#f5f5f5' }}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass" style={{ padding: '40px', width: '90%', maxWidth: '400px', background: '#ebebeb', borderRadius: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+            <div className="glass" style={{ padding: '40px', width: '90%', maxWidth: '400px', background: '#ebebeb', borderRadius: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                 <h2 style={{ color: '#d81b60', textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>
                     {isLogin ? 'Welcome Back ✨' : 'Join the Club 🧶'}
                 </h2>
@@ -141,14 +165,12 @@ const Login = () => {
                     </button>
                 </form>
 
-                {/* Divider */}
                 <div style={{ display: 'flex', alignItems: 'center', margin: '25px 0' }}>
                     <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
                     <p style={{ margin: '0 15px', color: '#888', fontSize: '0.9rem', fontWeight: 'bold' }}>OR</p>
                     <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
                 </div>
 
-                {/* Google Login Button */}
                 <button
                     onClick={handleGoogleLogin}
                     style={{
@@ -168,7 +190,7 @@ const Login = () => {
                         {isLogin ? 'Sign up' : 'Log in'}
                     </span>
                 </p>
-            </motion.div>
+            </div>
         </div>
     );
 };

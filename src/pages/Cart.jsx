@@ -1,13 +1,24 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext'; // Import Auth Context!
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom'; // Added useNavigate here
+import { useNavigate, Link } from 'react-router-dom';
 
 const Cart = () => {
     const { cart, removeFromCart, addToCart, decreaseQuantity } = useCart();
-    const navigate = useNavigate(); // Initialize the navigation hook
+    const { currentUser } = useAuth(); // Get the logged-in status
+    const navigate = useNavigate();
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const handleCheckoutClick = () => {
+        if (currentUser) {
+            navigate('/checkout');
+        } else {
+            alert("Please log in or sign up to place your order! 🧶");
+            navigate('/login');
+        }
+    };
 
     return (
         <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh', width: '100%', paddingTop: '120px', paddingBottom: '80px' }}>
@@ -78,9 +89,9 @@ const Cart = () => {
                             <h3 style={{ fontSize: '2.5rem', color: '#d81b60', fontWeight: '900' }}>₹{total}</h3>
                         </div>
 
-                        {/* Bulletproof Navigation Button */}
+                        {/* Updated button to check login status */}
                         <button
-                            onClick={() => navigate('/checkout')}
+                            onClick={handleCheckoutClick}
                             className="btn-cute"
                             style={{ width: '100%', padding: '18px', fontSize: '1.2rem', marginTop: '30px', borderRadius: '15px', letterSpacing: '1px' }}
                         >
