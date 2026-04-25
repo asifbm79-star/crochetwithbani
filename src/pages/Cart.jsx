@@ -1,7 +1,8 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { motion } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
     const { cart, removeFromCart } = useCart();
@@ -9,39 +10,66 @@ const Cart = () => {
 
     return (
         <div style={{ paddingTop: '120px', paddingBottom: '80px', width: '90%', maxWidth: '800px', margin: '0 auto', minHeight: '80vh' }}>
-            <h2 style={{ color: '#fb6f92', marginBottom: '30px', textAlign: 'center' }}>Your Cart 🛒</h2>
+
+            <h2 style={{ color: '#d81b60', marginBottom: '30px', textAlign: 'center', fontSize: '2.2rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
+                Your Cart <ShoppingBag size={32} />
+            </h2>
 
             {cart.length === 0 ? (
-                <div className="glass" style={{ padding: '50px', textAlign: 'center' }}>
-                    <h3>Your cart is empty and lonely!</h3>
-                </div>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass" style={{ padding: '60px', textAlign: 'center' }}>
+                    <h3 style={{ color: '#888', marginBottom: '25px', fontSize: '1.5rem' }}>Your cart is empty and lonely! 🧶</h3>
+                    <Link to="/">
+                        <button className="btn-cute" style={{ fontSize: '1.1rem', padding: '12px 30px' }}>Start Shopping</button>
+                    </Link>
+                </motion.div>
             ) : (
-                <div className="glass" style={{ padding: '30px' }}>
-                    {cart.map((item) => (
-                        <motion.div
-                            key={item.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-                            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 0', borderBottom: '1px solid rgba(255,255,255,0.3)' }}
-                        >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                <img src={item.img} alt={item.name} style={{ width: '60px', borderRadius: '10px' }} />
-                                <div>
-                                    <h4>{item.name}</h4>
-                                    <p style={{ fontSize: '0.9rem', color: '#fb6f92' }}>${item.price} x {item.quantity}</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => removeFromCart(item.id)}
-                                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#ff4d4d' }}
+                <div className="glass" style={{ padding: '40px', borderRadius: '30px' }}>
+                    <AnimatePresence>
+                        {cart.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px dashed rgba(216, 27, 96, 0.2)' }}
                             >
-                                <Trash2 />
-                            </button>
-                        </motion.div>
-                    ))}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                    {/* Fixed Thumbnail Image Container */}
+                                    <div style={{ width: '80px', height: '80px', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', background: '#fff0f3' }}>
+                                        <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                    <div>
+                                        <h4 style={{ fontSize: '1.3rem', color: '#333', marginBottom: '5px' }}>{item.name}</h4>
+                                        <p style={{ fontSize: '1.1rem', color: '#888' }}>
+                                            <span style={{ color: '#d81b60', fontWeight: 'bold' }}>₹{item.price}</span> <span style={{ fontSize: '0.9rem' }}>x {item.quantity}</span>
+                                        </p>
+                                    </div>
+                                </div>
 
-                    <div style={{ marginTop: '30px', textAlign: 'right' }}>
-                        <h3 style={{ marginBottom: '15px' }}>Total: <span style={{ color: '#fb6f92' }}>${total}</span></h3>
-                        <button className="btn-cute">Proceed to Checkout</button>
+                                {/* Redesigned Trash Button */}
+                                <button
+                                    onClick={() => removeFromCart(item.id)}
+                                    style={{
+                                        background: 'rgba(255, 77, 77, 0.1)', border: 'none', cursor: 'pointer', color: '#ff4d4d',
+                                        padding: '12px', borderRadius: '50%', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 77, 77, 0.2)'}
+                                    onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 77, 77, 0.1)'}
+                                >
+                                    <Trash2 size={20} />
+                                </button>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+
+                    <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <h3 style={{ fontSize: '1.5rem', color: '#555' }}>Total:</h3>
+                        <h3 style={{ fontSize: '2.5rem', color: '#d81b60', fontWeight: '900' }}>₹{total}</h3>
                     </div>
+
+                    <button className="btn-cute" style={{ width: '100%', padding: '18px', fontSize: '1.2rem', marginTop: '30px', borderRadius: '15px', letterSpacing: '1px' }}>
+                        Proceed to Checkout
+                    </button>
                 </div>
             )}
         </div>

@@ -1,76 +1,140 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { ChevronDown, ShoppingBag } from 'lucide-react';
 
 const products = [
-    { id: 1, name: "Mikasa Scarf", price: 799, instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed" },
-    { id: 2, name: "Reversible Octo", price: 375, instaLink: "https://www.instagram.com/p/DWraCbPCent/embed" },
+    {
+        id: 1,
+        name: "Mikasa Scarf",
+        price: 699,
+        instaLink: "https://www.instagram.com/p/DWRu3bwk9Rn/embed"
+    },
+    {
+        id: 2,
+        name: "Handmade Phone Cover",
+        price: 199,
+        instaLink: "https://www.instagram.com/p/DXABeIHiWwK/embed"
+    },
+    {
+        id: 3,
+        name: "Luffy Hat Keychain",
+        price: 99,
+        instaLink: "https://www.instagram.com/p/DXT5pd0ibGZ/embed"
+    },
+    {
+        id: 4,
+        name: "Sunflower Keychain",
+        price: 139,
+        instaLink: "https://www.instagram.com/p/DXT51UwCYWo/embed"
+    }
 ];
 
 const Home = () => {
     const { addToCart } = useCart();
+    const shopRef = useRef(null);
+
+    const scrollToShop = () => {
+        shopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     return (
-        <div style={{ paddingTop: '100px', paddingBottom: '80px', width: '90%', margin: '0 auto', maxWidth: '1200px' }}>
+        <div style={{ paddingBottom: '80px', width: '100%', overflowX: 'hidden', background: '#fafafa' }}>
 
-            {/* Video Hero Section */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-                style={{ width: '100%', height: '500px', borderRadius: '20px', overflow: 'hidden', marginBottom: '40px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-            >
-                <video
-                    src="/video/video.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-            </motion.div>
+            {/* --- IMMERSIVE HERO SECTION (Sleek Grey Minimalist Theme) --- */}
+            <div style={{ position: 'relative', width: '100%', height: '75vh', minHeight: '500px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)', borderRadius: '0 0 40px 40px', borderBottom: '1px solid #e0e0e0', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)' }}>
 
-            {/* Intro Text */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
-                className="glass" style={{ padding: '40px', textAlign: 'center', marginBottom: '50px' }}
-            >
-                <h1 style={{ fontSize: '2.5rem', color: '#d81b60', marginBottom: '10px' }}>Handmade with Love & Yarn</h1>
-                <p style={{ fontSize: '1.1rem' }}>Discover the cutest crochet apparel and accessories directly from our feed.</p>
-            </motion.div>
+                {/* Hero Content */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    style={{ textAlign: 'center', padding: '0 20px', maxWidth: '800px', zIndex: 1, marginTop: '50px' }}
+                >
+                    <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', color: '#2d3436', fontWeight: '800', letterSpacing: '-1.5px', marginBottom: '15px' }}>
+                        Handmade with <span style={{ color: '#636e72', fontStyle: 'italic' }}>Precision</span>
+                    </h1>
+                    <p style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: '#636e72', opacity: 0.9, marginBottom: '40px', fontWeight: '500', lineHeight: '1.6' }}>
+                        Discover premium, handcrafted crochet apparel and accessories. Designed with care, delivered to your wardrobe.
+                    </p>
 
-            {/* Catalogue Section with Instagram Embeds */}
-            <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#d81b60', fontSize: '2rem' }}>Latest Drops 🌸</h2>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', justifyItems: 'center' }}>
-                {products.map((item, index) => (
-                    <motion.div
-                        key={item.id} className="glass"
-                        initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        style={{ padding: '20px', textAlign: 'center', width: '100%', maxWidth: '400px' }}
+                    <button
+                        onClick={scrollToShop}
+                        style={{ background: '#2d3436', color: '#ffffff', border: 'none', padding: '16px 36px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease', boxShadow: '0 8px 20px rgba(45, 52, 54, 0.2)' }}
+                        onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.background = '#000000'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2d3436'; }}
                     >
-                        {/* Instagram Embed iFrame */}
-                        <iframe
-                            src={item.instaLink}
-                            width="100%"
-                            height="450"
-                            frameBorder="0"
-                            scrolling="no"
-                            allowtransparency="true"
-                            style={{ borderRadius: '15px', marginBottom: '15px', background: 'white' }}
-                            title={item.name}
-                        ></iframe>
+                        <ShoppingBag size={20} /> Shop the Collection
+                    </button>
+                </motion.div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '0 10px' }}>
-                            <h3 style={{ fontSize: '1.2rem', color: '#333' }}>{item.name}</h3>
-                            <p style={{ fontWeight: 'bold', color: '#d81b60', fontSize: '1.2rem' }}>₹{item.price}</p>
-                        </div>
-
-                        <button className="btn-cute" style={{ width: '100%' }} onClick={() => addToCart(item)}>
-                            Add to Cart
-                        </button>
-                    </motion.div>
-                ))}
+                {/* Bouncing Scroll Indicator */}
+                <motion.div
+                    animate={{ y: [0, 15, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    style={{ position: 'absolute', bottom: '30px', color: '#b2bec3', cursor: 'pointer' }}
+                    onClick={scrollToShop}
+                >
+                    <ChevronDown size={40} />
+                </motion.div>
             </div>
+
+            {/* --- CATALOGUE SECTION --- */}
+            <div ref={shopRef} style={{ width: '90%', maxWidth: '1200px', margin: '0 auto', paddingTop: '80px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                    <h2 style={{ color: '#2d3436', fontSize: '2.5rem', fontWeight: '800', letterSpacing: '-1px', marginBottom: '15px' }}>Latest Drops</h2>
+                    <div style={{ height: '3px', width: '40px', background: '#b2bec3', margin: '0 auto', borderRadius: '2px' }}></div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', justifyItems: 'center' }}>
+                    {products.map((item, index) => (
+                        <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ delay: index * 0.15, duration: 0.6 }}
+                            style={{
+                                padding: '20px', textAlign: 'center', width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column',
+                                background: '#ffffff', borderRadius: '16px', border: '1px solid #f1f2f6', boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
+                            }}
+                        >
+                            {/* Instagram Embed iFrame */}
+                            <div style={{ width: '100%', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px', background: '#f8f9fa' }}>
+                                <iframe
+                                    src={item.instaLink}
+                                    width="100%"
+                                    height="450"
+                                    frameBorder="0"
+                                    scrolling="no"
+                                    allowtransparency="true"
+                                    style={{ display: 'block' }}
+                                    title={item.name}
+                                ></iframe>
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', padding: '0 10px', flexGrow: 1 }}>
+                                <h3 style={{ fontSize: '1.2rem', color: '#2d3436', fontWeight: '700', margin: 0 }}>{item.name}</h3>
+                                <p style={{ fontWeight: '800', color: '#636e72', fontSize: '1.3rem', margin: 0 }}>₹{item.price}</p>
+                            </div>
+
+                            <button
+                                style={{
+                                    width: '100%', padding: '14px', fontSize: '1rem', marginTop: 'auto',
+                                    background: '#f1f2f6', color: '#2d3436', fontWeight: '700', border: 'none', borderRadius: '8px',
+                                    cursor: 'pointer', transition: 'all 0.2s ease'
+                                }}
+                                onMouseOver={(e) => { e.currentTarget.style.background = '#2d3436'; e.currentTarget.style.color = '#ffffff'; }}
+                                onMouseOut={(e) => { e.currentTarget.style.background = '#f1f2f6'; e.currentTarget.style.color = '#2d3436'; }}
+                                onClick={() => addToCart(item)}
+                            >
+                                Add to Cart
+                            </button>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+
         </div>
     );
 };
