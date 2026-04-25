@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Settings, Lock, Package, LifeBuoy } from 'lucide-react'; // Added new icons
 
 // Cute Google SVG Icon
 const GoogleIcon = () => (
@@ -47,23 +48,80 @@ const Login = () => {
         }
     };
 
-    // If already logged in
+    // --- LOGGED IN USER DASHBOARD VIEW ---
     if (currentUser) {
         return (
-            <div style={{ paddingTop: '150px', textAlign: 'center', minHeight: '80vh' }}>
-                <div className="glass" style={{ display: 'inline-block', padding: '50px' }}>
-                    <h2>Welcome back! 🌸</h2>
-                    <p style={{ margin: '20px 0' }}>Logged in as: {currentUser.email}</p>
-                    <button className="btn-cute" onClick={() => logout()}>Log Out</button>
-                </div>
+            <div style={{ paddingTop: '120px', paddingBottom: '80px', display: 'flex', justifyContent: 'center', minHeight: '80vh', backgroundColor: '#f5f5f5' }}>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    style={{ width: '90%', maxWidth: '600px' }}
+                >
+                    {/* Header Card */}
+                    <div className="glass" style={{ padding: '40px', textAlign: 'center', background: '#ebebeb', borderRadius: '30px', marginBottom: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                        <h2 style={{ color: '#d81b60', fontSize: '2rem', marginBottom: '10px' }}>Welcome back! 🌸</h2>
+                        <p style={{ color: '#555', marginBottom: '25px', fontSize: '1.1rem' }}>Logged in as: <strong>{currentUser.email}</strong></p>
+                        <button className="btn-cute" onClick={() => logout()} style={{ padding: '10px 30px' }}>Log Out</button>
+                    </div>
+
+                    {/* Account Options Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+
+                        {/* Option 1: Account Settings */}
+                        <div
+                            className="glass"
+                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+                            <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Settings size={24} /></div>
+                            <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Account Settings</h3>
+                        </div>
+
+                        {/* Option 2: Change Password */}
+                        <div
+                            className="glass"
+                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+                            <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Lock size={24} /></div>
+                            <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Change Password</h3>
+                        </div>
+
+                        {/* Option 3: Order History */}
+                        <div
+                            className="glass"
+                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+                            <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Package size={24} /></div>
+                            <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Order History</h3>
+                        </div>
+
+                        {/* Option 4: Support */}
+                        <div
+                            className="glass"
+                            style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+                            <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><LifeBuoy size={24} /></div>
+                            <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Support</h3>
+                        </div>
+
+                    </div>
+                </motion.div>
             </div>
         );
     }
 
+    // --- LOGGED OUT / LOGIN FORM VIEW ---
     return (
-        <div style={{ paddingTop: '120px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass" style={{ padding: '40px', width: '100%', maxWidth: '400px' }}>
-                <h2 style={{ color: '#d81b60', textAlign: 'center', marginBottom: '20px' }}>
+        <div style={{ paddingTop: '120px', paddingBottom: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', backgroundColor: '#f5f5f5' }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass" style={{ padding: '40px', width: '90%', maxWidth: '400px', background: '#ebebeb', borderRadius: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                <h2 style={{ color: '#d81b60', textAlign: 'center', marginBottom: '20px', fontSize: '2rem' }}>
                     {isLogin ? 'Welcome Back ✨' : 'Join the Club 🧶'}
                 </h2>
 
@@ -72,43 +130,43 @@ const Login = () => {
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <input
                         type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                        style={{ padding: '12px', borderRadius: '10px', border: '1px solid rgba(216, 27, 96, 0.2)', outline: 'none' }}
+                        style={{ padding: '15px', borderRadius: '15px', border: '1px solid #ddd', outline: 'none', fontSize: '1rem' }}
                     />
                     <input
                         type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                        style={{ padding: '12px', borderRadius: '10px', border: '1px solid rgba(216, 27, 96, 0.2)', outline: 'none' }}
+                        style={{ padding: '15px', borderRadius: '15px', border: '1px solid #ddd', outline: 'none', fontSize: '1rem' }}
                     />
-                    <button type="submit" className="btn-cute" style={{ marginTop: '10px' }}>
+                    <button type="submit" className="btn-cute" style={{ marginTop: '10px', padding: '15px', fontSize: '1.1rem' }}>
                         {isLogin ? 'Log In' : 'Sign Up'}
                     </button>
                 </form>
 
                 {/* Divider */}
-                <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(216, 27, 96, 0.2)' }}></div>
-                    <p style={{ margin: '0 10px', color: '#888', fontSize: '0.9rem' }}>or</p>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(216, 27, 96, 0.2)' }}></div>
+                <div style={{ display: 'flex', alignItems: 'center', margin: '25px 0' }}>
+                    <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
+                    <p style={{ margin: '0 15px', color: '#888', fontSize: '0.9rem', fontWeight: 'bold' }}>OR</p>
+                    <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
                 </div>
 
                 {/* Google Login Button */}
                 <button
                     onClick={handleGoogleLogin}
                     style={{
-                        width: '100%', padding: '12px', borderRadius: '50px', border: '1px solid #ddd',
+                        width: '100%', padding: '15px', borderRadius: '50px', border: '1px solid #ddd',
                         background: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center',
-                        cursor: 'pointer', fontWeight: 'bold', color: '#333', transition: 'all 0.3s'
+                        cursor: 'pointer', fontWeight: 'bold', color: '#333', transition: 'all 0.3s', fontSize: '1rem'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.background = '#f5f5f5'}
+                    onMouseOver={(e) => e.currentTarget.style.background = '#f9f9f9'}
                     onMouseOut={(e) => e.currentTarget.style.background = 'white'}
                 >
                     <GoogleIcon /> Continue with Google
                 </button>
 
-                <p style={{ textAlign: 'center', marginTop: '25px', fontSize: '0.9rem' }}>
+                <p style={{ textAlign: 'center', marginTop: '30px', fontSize: '1rem', color: '#555' }}>
                     {isLogin ? "Don't have an account? " : "Already have an account? "}
-                    <span onClick={() => setIsLogin(!isLogin)} style={{ color: '#d81b60', cursor: 'pointer', fontWeight: 'bold' }}>
-            {isLogin ? 'Sign up' : 'Log in'}
-          </span>
+                    <span onClick={() => setIsLogin(!isLogin)} style={{ color: '#d81b60', cursor: 'pointer', fontWeight: '800' }}>
+                        {isLogin ? 'Sign up' : 'Log in'}
+                    </span>
                 </p>
             </motion.div>
         </div>
