@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Payment from './pages/Payment';
+import Orders from './pages/Orders'; // <-- Import the new file
 import LoadingScreen from './components/LoadingScreen';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/checkout" element={<Payment />} />
+                        <Route path="/orders" element={<Orders />} /> {/* <-- Add the route here */}
                     </Routes>
                     <Footer />
                 </Router>

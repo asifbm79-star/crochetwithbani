@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { auth } from '../services/firebase';
-import { sendEmailVerification } from 'firebase/auth'; // Imported for the Resend button
+import { sendEmailVerification } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Settings, Lock, Package, LifeBuoy, Mail } from 'lucide-react';
 
@@ -61,14 +61,13 @@ const Login = () => {
         if (auth.currentUser) {
             await auth.currentUser.reload();
             if (auth.currentUser.emailVerified) {
-                window.location.href = "/";
+                window.location.href = "/"; // Instantly redirects to storefront
             } else {
                 alert("We haven't detected verification yet. Make sure you clicked the link in your email!");
             }
         }
     };
 
-    // New Resend Verification Email Function
     const handleResendVerification = async () => {
         try {
             if (auth.currentUser) {
@@ -97,16 +96,15 @@ const Login = () => {
                                 We've sent a magic link to <br/><strong>{currentUser.email}</strong>
                             </p>
 
-                            {/* Updated Spam Warning Box */}
+                            {/* Clean Spam Warning Box */}
                             <div style={{ background: 'rgba(255, 77, 77, 0.1)', border: '1px solid #ff4d4d', color: '#d81b60', padding: '15px', borderRadius: '15px', margin: '20px 0', fontWeight: 'bold' }}>
-                                🚨 Don't forget to check your spam list too 🕵️‍♀️
+                                🚨 Don't forget to check your spam list too! 🕵️‍♀️
                             </div>
 
                             <button className="btn-cute" onClick={checkVerificationStatus} style={{ width: '100%', padding: '15px', fontSize: '1.1rem', marginBottom: '15px' }}>
                                 I've Verified It!
                             </button>
 
-                            {/* New Resend Email Button */}
                             <button
                                 onClick={handleResendVerification}
                                 style={{ width: '100%', padding: '15px', fontSize: '1rem', marginBottom: '20px', background: 'transparent', color: '#d81b60', border: '2px solid rgba(216, 27, 96, 0.3)', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s' }}
@@ -137,22 +135,26 @@ const Login = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
 
+                        {/* Account Settings */}
                         <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Settings size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Account Settings</h3>
                         </div>
 
+                        {/* Change Password */}
                         <div onClick={handlePasswordReset} className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Lock size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Change Password</h3>
                         </div>
 
-                        <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                        {/* Order History (Navigates to /orders) */}
+                        <div onClick={() => navigate('/orders')} className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><Package size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Order History</h3>
                         </div>
 
-                        <div className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                        {/* Support (Opens Instagram DM) */}
+                        <div onClick={() => window.open("https://ig.me/m/crochetwithbani?text=Hi! I need some help regarding my account or an order.", "_blank")} className="glass" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', background: 'white', borderRadius: '20px', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 27, 96, 0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                             <div style={{ background: 'rgba(216, 27, 96, 0.1)', padding: '12px', borderRadius: '50%', color: '#d81b60' }}><LifeBuoy size={24} /></div>
                             <h3 style={{ fontSize: '1.2rem', color: '#333' }}>Support</h3>
                         </div>
