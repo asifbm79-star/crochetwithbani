@@ -24,7 +24,7 @@ const products = [
     },
     {
         id: 4,
-        name: "Sunflower Keychain",
+        name: "White Bow",
         price: 139,
         instaLink: "https://www.instagram.com/p/DXT51UwCYWo/embed"
     }
